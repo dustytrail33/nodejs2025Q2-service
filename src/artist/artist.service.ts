@@ -48,6 +48,9 @@ export class ArtistService {
       if (track.artistId === id) track.artistId = null;
     });
 
+    const favIndex = DB.favs.artists.indexOf(id);
+    if (favIndex !== -1) DB.favs.artists.splice(favIndex, 1);
+
     DB.artists.splice(index, 1);
   }
 }

@@ -48,6 +48,9 @@ export class AlbumService {
       if (track.albumId === id) track.albumId = null;
     });
 
+    const favIndex = DB.favs.albums.indexOf(id);
+    if (favIndex !== -1) DB.favs.albums.splice(favIndex, 1);
+
     DB.albums.splice(index, 1);
   }
 

@@ -79,6 +79,9 @@ export class TrackService {
     const index = DB.tracks.findIndex((track) => track.id === id);
     if (index === -1) throw new NotFoundException(`Track ${id} not found`);
 
+    const favIndex = DB.favs.tracks.indexOf(id);
+    if (favIndex !== -1) DB.favs.tracks.splice(favIndex, 1);
+
     DB.tracks.splice(index, 1);
   }
 }

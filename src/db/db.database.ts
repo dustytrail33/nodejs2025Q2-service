@@ -8,4 +8,9 @@ export const DB = {
   artists: [] as Artist[],
   tracks: [] as Track[],
   albums: [] as Album[],
+  favs: {
+    artists: [] as string[],
+    albums: [] as string[],
+    tracks: [] as string[],
+  },
 };

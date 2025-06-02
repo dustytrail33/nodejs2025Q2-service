@@ -17,8 +17,8 @@ export class UserService {
   }
 
   findOne(id: string): Omit<User, 'password'> {
-    const user = DB.users.find((u) => u.id === id);
-    if (!user) throw new NotFoundException(`User with id=${id} not found`);
+    const user = DB.users.find((user) => user.id === id);
+    if (!user) throw new NotFoundException(`User ${id} not found`);
     return removePassword(user);
   }
 
@@ -37,9 +37,8 @@ export class UserService {
   }
 
   updatePassword(id: string, dto: UpdatePasswordDto): Omit<User, 'password'> {
-    const userIndex = DB.users.findIndex((u) => u.id === id);
-    if (userIndex === -1)
-      throw new NotFoundException(`User with id=${id} not found`);
+    const userIndex = DB.users.findIndex((user) => user.id === id);
+    if (userIndex === -1) throw new NotFoundException(`User ${id} not found`);
 
     const user = DB.users[userIndex];
     if (user.password !== dto.oldPassword) {
@@ -49,15 +48,13 @@ export class UserService {
     user.password = dto.newPassword;
     user.version += 1;
     user.updatedAt = Date.now();
-    // DB.users[userIndex] = user;
 
     return removePassword(user);
   }
 
   remove(id: string): void {
-    const userIndex = DB.users.findIndex((u) => u.id === id);
-    if (userIndex === -1)
-      throw new NotFoundException(`User with id=${id} not found`);
+    const userIndex = DB.users.findIndex((user) => user.id === id);
+    if (userIndex === -1) throw new NotFoundException(`User ${id} not found`);
     DB.users.splice(userIndex, 1);
   }
 }
