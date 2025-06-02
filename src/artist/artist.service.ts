@@ -12,8 +12,8 @@ export class ArtistService {
   }
 
   findOne(id: string): Artist {
-    const artist = DB.artists.find((a) => a.id === id);
-    if (!artist) throw new NotFoundException(`Artist with id=${id} not found`);
+    const artist = DB.artists.find((artist) => artist.id === id);
+    if (!artist) throw new NotFoundException(`Artist ${id} not found`);
     return artist;
   }
 
@@ -28,9 +28,8 @@ export class ArtistService {
   }
 
   update(id: string, dto: UpdateArtistDto): Artist {
-    const index = DB.artists.findIndex((a) => a.id === id);
-    if (index === -1)
-      throw new NotFoundException(`Artist with id=${id} not found`);
+    const index = DB.artists.findIndex((artist) => artist.id === id);
+    if (index === -1) throw new NotFoundException(`Artist ${id} not found`);
     const artist = DB.artists[index];
     if (dto.name !== undefined) artist.name = dto.name;
     if (dto.grammy !== undefined) artist.grammy = dto.grammy;
@@ -38,9 +37,16 @@ export class ArtistService {
   }
 
   remove(id: string): void {
-    const index = DB.artists.findIndex((a) => a.id === id);
-    if (index === -1)
-      throw new NotFoundException(`Artist with id=${id} not found`);
+    const index = DB.artists.findIndex((artist) => artist.id === id);
+    if (index === -1) throw new NotFoundException(`Artist ${id} not found`);
+
+    DB.albums.forEach((album) => {
+      if (album.artistId === id) album.artistId = null;
+    });
+
+    DB.tracks.forEach((track) => {
+      if (track.artistId === id) track.artistId = null;
+    });
 
     DB.artists.splice(index, 1);
   }
