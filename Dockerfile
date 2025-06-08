@@ -1,16 +1,20 @@
-FROM node:22-alpine AS build
 
-USER node
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-COPY --chown=node:node package*.json ./
+COPY package*.json ./
+RUN npm ci --legacy-peer-deps
 
-RUN npm ci --legacy-peer-deps --omit=dev && npm cache clean --force
-
-COPY --chown=node:node . .
+COPY . .
 
 RUN npx prisma generate
+RUN npm run build
 
-CMD ["sh", "-c", "npx prisma migrate deploy && npm run start"]
+FROM node:22-alpine
 
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main"]

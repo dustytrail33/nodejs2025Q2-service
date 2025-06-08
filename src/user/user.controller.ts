@@ -10,6 +10,7 @@ import {
   ValidationPipe,
   HttpCode,
   HttpStatus,
+  NotFoundException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -110,7 +111,10 @@ export class UserController {
   })
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id', UuidValidationPipe) id: string) {
-    this.userService.remove(id);
+  async remove(@Param('id', UuidValidationPipe) id: string) {
+    const removedUser = await this.userService.remove(id);
+    if (!removedUser) {
+      throw new NotFoundException('User not found');
+    }
   }
 }
