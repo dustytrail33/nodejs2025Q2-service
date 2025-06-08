@@ -5,6 +5,11 @@ import { Track } from 'src/track/entities/track.entity';
 
 export class Favs {
   @ApiProperty({
+    format: 'uuid',
+  })
+  id: string;
+
+  @ApiProperty({
     isArray: true,
     type: Artist,
   })

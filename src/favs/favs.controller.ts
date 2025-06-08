@@ -27,8 +27,8 @@ export class FavsController {
   })
   @Get()
   @HttpCode(HttpStatus.OK)
-  getAll() {
-    return this.favsService.getAll();
+  async getAll() {
+    return await this.favsService.getFavorites();
   }
 
   @ApiOperation({
@@ -48,8 +48,8 @@ export class FavsController {
   })
   @Post('track/:id')
   @HttpCode(HttpStatus.CREATED)
-  addTrack(@Param('id', UuidValidationPipe) id: string) {
-    this.favsService.addTrack(id);
+  async addTrack(@Param('id', UuidValidationPipe) id: string) {
+    await this.favsService.addTrack(id);
     return { message: `Track ${id} added to favorites` };
   }
 
@@ -70,8 +70,8 @@ export class FavsController {
   })
   @Delete('track/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  removeTrack(@Param('id', UuidValidationPipe) id: string) {
-    this.favsService.removeTrack(id);
+  async removeTrack(@Param('id', UuidValidationPipe) id: string) {
+    await this.favsService.removeTrack(id);
   }
 
   @ApiOperation({
@@ -91,8 +91,8 @@ export class FavsController {
   })
   @Post('album/:id')
   @HttpCode(HttpStatus.CREATED)
-  addAlbum(@Param('id', UuidValidationPipe) id: string) {
-    this.favsService.addAlbum(id);
+  async addAlbum(@Param('id', UuidValidationPipe) id: string) {
+    await this.favsService.addAlbum(id);
     return { message: `Album ${id} added to favorites` };
   }
 
@@ -113,8 +113,8 @@ export class FavsController {
   })
   @Delete('album/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  removeAlbum(@Param('id', UuidValidationPipe) id: string) {
-    this.favsService.removeAlbum(id);
+  async removeAlbum(@Param('id', UuidValidationPipe) id: string) {
+    await this.favsService.removeAlbum(id);
   }
 
   @ApiOperation({
@@ -134,8 +134,8 @@ export class FavsController {
   })
   @Post('artist/:id')
   @HttpCode(HttpStatus.CREATED)
-  addArtist(@Param('id', UuidValidationPipe) id: string) {
-    this.favsService.addArtist(id);
+  async addArtist(@Param('id', UuidValidationPipe) id: string) {
+    await this.favsService.addArtist(id);
     return { message: `Artist ${id} added to favorites` };
   }
 
@@ -156,7 +156,7 @@ export class FavsController {
   })
   @Delete('artist/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  removeArtist(@Param('id', UuidValidationPipe) id: string) {
-    this.favsService.removeArtist(id);
+  async removeArtist(@Param('id', UuidValidationPipe) id: string) {
+    await this.favsService.removeArtist(id);
   }
 }

@@ -10,6 +10,7 @@ import {
   ValidationPipe,
   HttpCode,
   HttpStatus,
+  NotFoundException,
 } from '@nestjs/common';
 import { ArtistService } from './artist.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
@@ -113,7 +114,10 @@ export class ArtistController {
   })
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id', UuidValidationPipe) id: string) {
-    this.artistService.remove(id);
+  async remove(@Param('id', UuidValidationPipe) id: string) {
+    const removedArtist = await this.artistService.remove(id);
+    if (!removedArtist) {
+      throw new NotFoundException('Artist not found');
+    }
   }
 }

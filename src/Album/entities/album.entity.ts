@@ -23,4 +23,11 @@ export class Album {
     format: 'uuid',
   })
   artistId: string | null;
+
+  @ApiProperty({
+    description: 'Album id',
+    nullable: true,
+    format: 'uuid',
+  })
+  favoriteId: string | null;
 }

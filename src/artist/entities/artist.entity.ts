@@ -15,4 +15,11 @@ export class Artist {
     example: false,
   })
   grammy: boolean;
+
+  @ApiProperty({
+    description: 'Album id',
+    nullable: true,
+    format: 'uuid',
+  })
+  favoriteId: string | null;
 }

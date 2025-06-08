@@ -26,6 +26,13 @@ export class Track {
   albumId: string | null;
 
   @ApiProperty({
+    description: 'Album id',
+    nullable: true,
+    format: 'uuid',
+  })
+  favoriteId: string | null;
+
+  @ApiProperty({
     type: 'integer',
     description: 'Duration',
     example: 400,

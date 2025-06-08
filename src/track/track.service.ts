@@ -4,8 +4,9 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
-import { UpdateTrackDto } from './dto/update-track.dto';
+// import { UpdateTrackDto } from './dto/update-track.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { Track } from './entities/track.entity';
 
 @Injectable()
 export class TrackService {
@@ -52,7 +53,7 @@ export class TrackService {
     });
   }
 
-  async update(id: string, dto: UpdateTrackDto) {
+  async update(id: string, dto: Partial<Track>) {
     const track = await this.prisma.track.findUnique({ where: { id } });
     if (!track) throw new NotFoundException(`Track ${id} not found`);
 
@@ -83,6 +84,7 @@ export class TrackService {
         artistId: dto.artistId ?? null,
         albumId: dto.albumId ?? null,
         duration: dto.duration,
+        favoriteId: dto.favoriteId ?? null,
       },
     });
   }
