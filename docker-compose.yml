@@ -1,6 +1,9 @@
+version: '3.8'
+
 services:
-  postgres:
-    image: postgres:15
+  db:
+    image: postgres:17-alpine
+    container_name: postgres_db
     restart: always
     environment:
       POSTGRES_USER: postgres
@@ -9,7 +12,28 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nest_app
+    restart: always
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/homelibrary?schema=public
+    ports:
+      - '${PORT}:${PORT}'
+    networks:
+      - app-network
 
 volumes:
-  postgres_data:
+  postgres-data:
+
+networks:
+  app-network:
+    driver: bridge
