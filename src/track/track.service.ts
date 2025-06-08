@@ -3,85 +3,95 @@ import {
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { randomUUID } from 'crypto';
-import { Track } from './entities/track.entity';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
-import { DB } from 'src/db/db.database';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class TrackService {
-  findAll(): Track[] {
-    return DB.tracks;
+  constructor(private readonly prisma: PrismaService) {}
+
+  async findAll() {
+    return this.prisma.track.findMany();
   }
 
-  findOne(id: string): Track {
-    const track = DB.tracks.find((t) => t.id === id);
+  async findOne(id: string) {
+    const track = await this.prisma.track.findUnique({ where: { id } });
     if (!track) throw new NotFoundException(`Track ${id} not found`);
     return track;
   }
 
-  update(id: string, dto: UpdateTrackDto): Track {
-    const index = DB.tracks.findIndex((track) => track.id === id);
-    if (index === -1) throw new NotFoundException(`Track ${id} not found`);
+  async create(dto: CreateTrackDto) {
+    if (dto.artistId) {
+      const artistExists = await this.prisma.artist.findUnique({
+        where: { id: dto.artistId },
+      });
+      if (!artistExists)
+        throw new UnprocessableEntityException(
+          `Artist ${dto.artistId} not found`,
+        );
+    }
+
+    if (dto.albumId) {
+      const albumExists = await this.prisma.album.findUnique({
+        where: { id: dto.albumId },
+      });
+      if (!albumExists)
+        throw new UnprocessableEntityException(
+          `Album ${dto.albumId} not found`,
+        );
+    }
+
+    return this.prisma.track.create({
+      data: {
+        name: dto.name,
+        artistId: dto.artistId ?? null,
+        albumId: dto.albumId ?? null,
+        duration: dto.duration,
+      },
+    });
+  }
+
+  async update(id: string, dto: UpdateTrackDto) {
+    const track = await this.prisma.track.findUnique({ where: { id } });
+    if (!track) throw new NotFoundException(`Track ${id} not found`);
 
     if (dto.artistId !== undefined && dto.artistId !== null) {
-      const artist = DB.artists.some((artist) => artist.id === dto.artistId);
-      if (!artist)
+      const artistExists = await this.prisma.artist.findUnique({
+        where: { id: dto.artistId },
+      });
+      if (!artistExists)
         throw new UnprocessableEntityException(
           `Artist ${dto.artistId} not found`,
         );
     }
+
     if (dto.albumId !== undefined && dto.albumId !== null) {
-      const album = DB.albums.some((album) => album.id === dto.albumId);
-      if (!album)
+      const albumExists = await this.prisma.album.findUnique({
+        where: { id: dto.albumId },
+      });
+      if (!albumExists)
         throw new UnprocessableEntityException(
           `Album ${dto.albumId} not found`,
         );
     }
 
-    const track = DB.tracks[index];
-    if (dto.name !== undefined) track.name = dto.name;
-    if ('artistId' in dto) track.artistId = dto.artistId ?? null;
-    if ('albumId' in dto) track.albumId = dto.albumId ?? null;
-    if (dto.duration !== undefined) track.duration = dto.duration;
-
-    return track;
+    return this.prisma.track.update({
+      where: { id },
+      data: {
+        name: dto.name,
+        artistId: dto.artistId ?? null,
+        albumId: dto.albumId ?? null,
+        duration: dto.duration,
+      },
+    });
   }
 
-  create(dto: CreateTrackDto): Track {
-    if (dto.artistId) {
-      const artist = DB.artists.some((artist) => artist.id === dto.artistId);
-      if (!artist)
-        throw new UnprocessableEntityException(
-          `Artist ${dto.artistId} not found`,
-        );
+  async remove(id: string) {
+    const track = await this.findOne(id);
+    if (!track) {
+      return null;
     }
-    if (dto.albumId) {
-      const album = DB.albums.some((album) => album.id === dto.albumId);
-      if (!album)
-        throw new UnprocessableEntityException(
-          `Album ${dto.albumId} not found`,
-        );
-    }
-    const newTrack: Track = {
-      id: randomUUID(),
-      name: dto.name,
-      artistId: dto.artistId ?? null,
-      albumId: dto.albumId ?? null,
-      duration: dto.duration,
-    };
-    DB.tracks.push(newTrack);
-    return newTrack;
-  }
-
-  remove(id: string): void {
-    const index = DB.tracks.findIndex((track) => track.id === id);
-    if (index === -1) throw new NotFoundException(`Track ${id} not found`);
-
-    const favIndex = DB.favs.tracks.indexOf(id);
-    if (favIndex !== -1) DB.favs.tracks.splice(favIndex, 1);
-
-    DB.tracks.splice(index, 1);
+    return this.prisma.track.delete({ where: { id } });
   }
 }

@@ -10,7 +10,7 @@ export class UpdateAlbumDto {
   name?: string;
 
   @ApiProperty({
-    example: 'album year',
+    example: 200,
   })
   @IsOptional()
   @IsNumber()

@@ -10,6 +10,7 @@ import {
   ValidationPipe,
   HttpCode,
   HttpStatus,
+  NotFoundException,
 } from '@nestjs/common';
 import { AlbumService } from './album.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
@@ -119,7 +120,10 @@ export class AlbumController {
   })
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id', UuidValidationPipe) id: string) {
-    this.albumService.remove(id);
+  async remove(@Param('id', UuidValidationPipe) id: string) {
+    const removedAlbum = await this.albumService.remove(id);
+    if (!removedAlbum) {
+      throw new NotFoundException('Album not found');
+    }
   }
 }

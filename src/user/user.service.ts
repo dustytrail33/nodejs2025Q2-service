@@ -3,12 +3,10 @@ import {
   NotFoundException,
   ForbiddenException,
 } from '@nestjs/common';
-// import { randomUUID } from 'crypto';
 import { User as PrismaUser } from '@prisma/client';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
-// import { DB } from 'src/db/db.database';
 import { removePassword } from 'src/utils/remove-password.util';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -62,11 +60,6 @@ export class UserService {
   }
 
   async remove(id: string): Promise<User> {
-    // const user = await this.prisma.user.findUnique({ where: { id } });
-    // if (!user) throw new NotFoundException(`User ${id} not found`);
-
-    // await this.prisma.user.delete({ where: { id } });
-    // return user
     const removedUser = await this.findOne(id);
     if (!removedUser) {
       return null;

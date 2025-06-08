@@ -10,6 +10,7 @@ import {
   ValidationPipe,
   HttpCode,
   HttpStatus,
+  NotFoundException,
 } from '@nestjs/common';
 import { TrackService } from './track.service';
 import { CreateTrackDto } from './dto/create-track.dto';
@@ -77,8 +78,11 @@ export class TrackController {
   })
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id', UuidValidationPipe) id: string) {
-    this.trackService.remove(id);
+  async remove(@Param('id', UuidValidationPipe) id: string) {
+    const removedTrack = await this.trackService.remove(id);
+    if (!removedTrack) {
+      throw new NotFoundException('Track not found');
+    }
   }
 
   @ApiOperation({
