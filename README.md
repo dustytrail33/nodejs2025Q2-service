@@ -8,16 +8,58 @@
 ## Downloading
 
 ```
-git clone {repository URL}
+git clone https://github.com/dustytrail33/nodejs2025Q2-service.git
 ```
 
 ## Installing NPM modules
 
 ```
-npm install
+npm install --legacy-peer-deps
+```
+
+## Environment Variables
+
+### Application Port
+
+You can change the default port on which the app runs in the `.env` file located at the root of the project. For example:
+
+```bash
+PORT=4000
+```
+
+### Database Connection
+
+You can specify the PostgreSQL database connection parameters int the `.env` file:
+
+```bash
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=postgres
+DATABASE_URL="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?schema=public"
 ```
 
 ## Running application
+
+The application uses the `docker-compose.yml` file for building and running the application. To start the app run one of these commands:
+
+```bash
+# Run the containers and see all the logs in the console
+docker compose up
+
+# Run the containers in the "detached" mode
+docker compose up -d
+
+# Run the containers in the "watch" mode (the application in the container restarts if changes made in the src folder)
+docker compose up --watch
+```
+
+To stop the containers run the following command:
+
+```bash
+docker compose down
+```
 
 ```
 npm start
@@ -26,6 +68,20 @@ npm start
 After starting the app on port (4000 as default) you can open
 in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
 For more information about OpenAPI/Swagger please visit https://swagger.io/.
+
+## Scan Docker Images For Vulnerabilities
+
+For scanning purposes [Trivy](https://trivy.dev/) is used, running in a Docker container.
+
+To scan images run one of the following commands:
+
+```bash
+# Scan the app container
+npm run scan:app
+
+# Scan the db container
+npm run scan:db
+```
 
 ## Testing
 
