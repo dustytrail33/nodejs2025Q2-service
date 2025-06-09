@@ -3,7 +3,6 @@ import {
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-// import { isUUID } from 'class-validator';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Favs } from './entities/favs.entity';
 import { Track } from 'src/track/entities/track.entity';

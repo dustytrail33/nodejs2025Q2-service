@@ -4,7 +4,6 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
-// import { UpdateTrackDto } from './dto/update-track.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Track } from './entities/track.entity';
 
