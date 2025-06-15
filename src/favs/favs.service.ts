@@ -8,7 +8,7 @@ import { Favs } from './entities/favs.entity';
 import { Track } from 'src/track/entities/track.entity';
 import { TrackService } from 'src/track/track.service';
 import { Artist } from 'src/artist/entities/artist.entity';
-import { Album } from 'src/album/entities/album.entity';
+import { Album } from 'generated/prisma';
 
 const include = {
   albums: {
