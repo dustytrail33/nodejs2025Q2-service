@@ -9,7 +9,6 @@ import { Request } from 'express';
 import { IS_PUBLIC_KEY } from '../common/decorators/public.decorator';
 import { TokensService } from './TokensService';
 
-
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
